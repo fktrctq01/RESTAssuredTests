@@ -1,0 +1,2978 @@
+{
+	"info": {
+		"_postman_id": "68764335-762b-4ef9-a186-93dfbe96f2a3",
+		"name": "OrderBookTests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "01. GetOrderByIdWhichDoesNotExist",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"01.01. Check response status code for get order by id which does not exist\", function () {",
+							"    pm.response.to.have.status(404);",
+							"    ",
+							"});",
+							"pm.test(\"01.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\", (error, response) => {",
+							"  if (error)",
+							"    console.log(error);",
+							"  pm.test('01. Preconditions. Cleaning the orderbook', () => {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 200);",
+							"    pm.expect(response).to.have.property('status', 'OK');",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=1",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "02. IncorrectRequestWhenGetOrderByStringId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"02.01. Check response status code for get order by id with incorrect request\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"02.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=str",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "str"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "03. IncorrectRequestWhenGetOrderByEmptyId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"03.01. Check response status code for get order by id with incorrect request\",  function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"03.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "04. IncorrectRequestWhenGetOrderByDecimalId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"04.01. Check response status code for get order by id with incorrect request\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"04.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=1.2",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1.2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "05. IncorrectRequestWhenGetOrderByIdWithoutParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"05.01. Check response status code for get order by id with incorrect request\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"05.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1.2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "06. GetOrderByIdWithAllParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"06.01. Check response status code for get order by id\", function (){",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"06.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"1\");",
+							"    pm.expect(jsonData.price).to.eql(\"500.5\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"2\");",
+							"    pm.expect(jsonData.side).to.eql(\"buy\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 4)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 4 elements in body\")",
+							"});",
+							"pm.test(\"06.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(HOST + \"/api/order/clean\", (error, response) => {",
+							"  if (error)",
+							"    console.log(error);",
+							"  pm.test('06. Preconditions. Cleaning the orderbook', function () {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 200);",
+							"    pm.expect(response).to.have.property('status', 'OK');",
+							"  });",
+							"});",
+							"",
+							"//Помещаем заявку в стакан",
+							"const postRequest = {",
+							"  url: HOST + \"/api/order/create\",",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"    'X-Foo': 'bar'",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify(",
+							"        { ",
+							"            id: \"1\",",
+							"            price : \"500.5\", ",
+							"            quantity: \"2\", ",
+							"            side: \"Buy\"",
+							"        }",
+							"    )",
+							"  }",
+							"};",
+							"",
+							"pm.sendRequest(postRequest, (error, response) => {",
+							"    if (error) ",
+							"        console.log(error);",
+							"    pm.test('06. Preconditions. Сreate order', function () {",
+							"        pm.expect(error).to.equal(null);",
+							"        pm.expect(response).to.have.property('code', 200);",
+							"        pm.expect(response).to.have.property('status', 'OK');",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=1",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "07. GetOrderByIdWithoutPrice(TODO)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"07.01. Check response status code for get order by id\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"07.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"1\");",
+							"    pm.expect(jsonData.price).to.eql(\"500.5\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"2\");",
+							"    pm.expect(jsonData.side).to.eql(\"buy\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 4)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 4 elements in body\")",
+							"});",
+							"pm.test(\"07.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(HOST + \"/api/order/clean\", (error, response) => {",
+							"  if (error) ",
+							"    console.log(error);",
+							"  pm.test('07. Preconditions. Cleaning the orderbook', function () {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 200);",
+							"    pm.expect(response).to.have.property('status', 'OK');",
+							"  });",
+							"});",
+							"",
+							"//Помещаем заявку в стакан",
+							"const postRequest = {",
+							"  url: HOST + \"/api/order/create\",",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"    'X-Foo': 'bar'",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify(",
+							"        { ",
+							"            id: \"1\",",
+							"            quantity: \"2\", ",
+							"            side: \"Buy\"",
+							"        }",
+							"    )",
+							"  }",
+							"};",
+							"",
+							"pm.sendRequest(postRequest, (error, response) => {",
+							"    if (error) ",
+							"        console.log(error);",
+							"    pm.test('07. Preconditions. Сreate order', () => {",
+							"        pm.expect(error).to.equal(null);",
+							"        pm.expect(response).to.have.property('code', 200);",
+							"        pm.expect(response).to.have.property('status', 'OK');",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=1",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "08. GetOrderByIdWithoutId(TODO)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"08.01. Check response status code for get order by id\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"08.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"1\");",
+							"    pm.expect(jsonData.price).to.eql(\"500.5\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"2\");",
+							"    pm.expect(jsonData.side).to.eql(\"buy\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 4)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 4 elements in body\")",
+							"});",
+							"pm.test(\"08.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(\"https://\" + HOST + \"/api/order/clean\", (error, response) => {",
+							"  if (error) ",
+							"    console.log(error);",
+							"  pm.test('08. Preconditions. Cleaning the orderbook', function (){",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 200);",
+							"    pm.expect(response).to.have.property('status', 'OK');",
+							"  });",
+							"});",
+							"",
+							"//Помещаем заявку в стакан",
+							"const postRequest = {",
+							"  url: \"https://\" + HOST + \"/api/order/create\",",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"    'X-Foo': 'bar'",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify(",
+							"        { ",
+							"            // id: \"1\",",
+							"            price : \"500.5\", ",
+							"            quantity: \"2\", ",
+							"            side: \"Buy\"",
+							"        }",
+							"    )",
+							"  }",
+							"};",
+							"",
+							"pm.sendRequest(postRequest, (error, response) => {",
+							"    if (error) ",
+							"        console.log(error);",
+							"    pm.test('08. Preconditions. Сreate order', function () {",
+							"        pm.expect(error).to.equal(null);",
+							"        pm.expect(response).to.have.property('code', 200);",
+							"        pm.expect(response).to.have.property('status', 'OK');",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}/api/order?id=1",
+					"protocol": "https",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "09. ToCleanEmptyOrderBook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"09.01. Check response status code for clean order book request\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"09.02. Check response body for clean order book request\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Order book is clean.\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 1)",
+							"        pm.expect.fail(\"Invalid body response. Expected only one elements in body\")",
+							"});",
+							"pm.test(\"09.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что метод реально почистил все заявки в стакане",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/marketdata\", (error, response_md) => {",
+							"  pm.test('09.04. Сheck order book for no orders', () => {",
+							"    var jsonData = response_md.json();",
+							"    if (jsonData.asks.length != 0 || jsonData.bids.length != 0)",
+							"      pm.expect.fail(\"OrderBook is not empty\")",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Убеждаемся, что в стакане нет заявок, иначе очищаем его",
+							"pm.sendRequest(HOST + \"/api/marketdata\", (error, response_md_1) => {",
+							"  pm.test('09. Preconditions. Сheck order book for no orders', function ()  {",
+							"    var jsonData = response_md_1.json();",
+							"    if (jsonData.asks.length != 0 || jsonData.bids.length != 0){",
+							"      pm.sendRequest(HOST + \"/api/order/clean\");",
+							"      pm.sendRequest(HOST + \"/api/marketdata\", (error, response_md_2) => {",
+							"        var jsonData = response_md_2.json();",
+							"        if (jsonData.asks.length != 0 || jsonData.bids.length != 0)",
+							"          pm.expect.fail(\"Order book is not empty\")",
+							"    });",
+							"    }",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order/clean",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"clean"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10. ToCleanOrderBookWithOneOrder",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Очищаем стакан заявок",
+							"pm.sendRequest(HOST + \"/api/order/clean\");",
+							"",
+							"//Помещаем одну заявку в стакан",
+							"const postRequest = {",
+							"  url: HOST + \"/api/order/create\",",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"    'X-Foo': 'bar'",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify(",
+							"        { ",
+							"            id: \"1\",",
+							"            price : \"500.5\", ",
+							"            quantity: \"2\", ",
+							"            side: \"Buy\"",
+							"        }",
+							"    )",
+							"  }",
+							"};",
+							"pm.sendRequest(postRequest)",
+							"",
+							"//Убеждаемся, что в стакане ровно одна заявка",
+							"pm.sendRequest(HOST + \"/api/marketdata\", (error, response) => {",
+							"    var jsonData = response.json();",
+							"    if (jsonData.asks.length + jsonData.bids.length != 1)",
+							"      pm.expect.fail(\"Order book is not contain only one order\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"10.01. Check response status code for clean order book request\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"10.02. Check response body for clean order book request\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Order book is clean.\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 1)",
+							"        pm.expect.fail(\"Invalid body response. Expected only one elements in body\")",
+							"});",
+							"pm.test(\"10.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что метод реально почистил все заявки в стакане",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/marketdata\", (error, response) => {",
+							"  pm.test('10.04. Сheck order book for no orders', () => {",
+							"    var jsonData = response.json();",
+							"    if (jsonData.asks.length != 0 || jsonData.bids.length != 0)",
+							"      pm.expect.fail(\"OrderBook is not empty\")",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order/clean",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"clean"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11. ToCleanOrderBookWithMoreOrder",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"11.01. Check response status code for clean order book request\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"11.02. Check response body for clean order book request\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Order book is clean.\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 1)",
+							"        pm.expect.fail(\"Invalid body response. Expected only one elements in body\")",
+							"});",
+							"pm.test(\"11.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что метод реально почистил все заявки в стакане",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/marketdata\", (error, response) => {",
+							"  pm.test('11.04. Сheck order book for no orders', function () {",
+							"    var jsonData = response.json();",
+							"    if (jsonData.asks.length != 0 || jsonData.bids.length != 0)",
+							"      pm.expect.fail(\"OrderBook is not empty\")",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Очищаем стакан заявок",
+							"pm.sendRequest(HOST + \"/api/order/clean\");",
+							"",
+							"//Помещаем одну заявку в стакан",
+							"postRequest = {",
+							"  url: HOST + \"/api/order/create\",",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"    'X-Foo': 'bar'",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify(",
+							"        { ",
+							"            id: \"1\",",
+							"            price : \"500.5\", ",
+							"            quantity: \"2\", ",
+							"            side: \"buy\"",
+							"        }",
+							"    )",
+							"  }",
+							"};",
+							"pm.sendRequest(postRequest)",
+							"",
+							"//Помещаем одну заявку в стакан",
+							"postRequest = {",
+							"  url: HOST + \"/api/order/create\",",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"    'X-Foo': 'bar'",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify(",
+							"        { ",
+							"            id: \"2\",",
+							"            price : \"500.5\", ",
+							"            quantity: \"2\", ",
+							"            side: \"Sell\"",
+							"        }",
+							"    )",
+							"  }",
+							"};",
+							"pm.sendRequest(postRequest)",
+							"",
+							"//Убеждаемся, что в стакане более одной заявки",
+							"pm.sendRequest(HOST + \"/api/marketdata\", (error, response) => {",
+							"    var jsonData = response.json();",
+							"    if (jsonData.asks.length + jsonData.bids.length != 1)",
+							"      pm.expect.fail(\"Order book is not contain only one order\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order/clean",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"clean"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12. AttemptToDeleteOrderByIdWhichDoesNotExist",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\", (error, response) => {",
+							"  if (error)",
+							"    console.log(error);",
+							"  pm.test('12. Preconditions. Cleaning the orderbook', function () {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 200);",
+							"    pm.expect(response).to.have.property('status', 'OK');",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"12.01. Check response status code for delete order by id which does not exist\", function () {",
+							"    pm.response.to.have.status(404);",
+							"});",
+							"pm.test(\"12.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=1",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "13. IncorrectRequestWhenDeleteOrderByStringId",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"13.01. Check response status code for delete order by id with incorrect request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"13.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=str",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "str"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "14. IncorrectRequestWhenDeleteOrderByEmptyId",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"14.01. Check response status code for delete order by id with incorrect request\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"14.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "15. IncorrectRequestWhenDeleteOrderByDecimalId",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"15.01. Check response status code for delete order by id with incorrect request\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"15.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=1.2",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1.2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "16. IncorrectRequestWhenDeleteOrderByIdWithoutParams",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"16.01. Check response status code for delete order by id with incorrect request\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"16.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "1.2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "17. DeleteOrderWithAllParamsById",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(HOST + \"/api/order/clean\")",
+							"",
+							"//Помещаем заявку в стакан",
+							"const postRequest = {",
+							"  url: HOST + \"/api/order/create\",",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"    'X-Foo': 'bar'",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify(",
+							"        { ",
+							"            id: \"9999\",",
+							"            price : \"9999\", ",
+							"            quantity: \"9999\", ",
+							"            side: \"Sell\"",
+							"        }",
+							"    )",
+							"  }",
+							"};",
+							"pm.sendRequest(postRequest);",
+							"",
+							"//Проверяем, что заявка в стакане есть",
+							"pm.sendRequest(HOST + \"/api/order?id=9999\", (error, response) => {",
+							"  if (error)",
+							"    console.log(error);",
+							"  pm.test('17. Preconditions. Check added order in orderbook', () => {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 200);",
+							"    pm.expect(response).to.have.property('status', 'OK');",
+							"",
+							"    var jsonData = response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"9999\");",
+							"    pm.expect(jsonData.price).to.eql(\"9999\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"9999\");",
+							"    pm.expect(jsonData.side).to.eql(\"Sell\");",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"17.01. Check response status code for delete order by id\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"17.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"9999\");",
+							"    pm.expect(jsonData.price).to.eql(\"9999\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"9999\");",
+							"    pm.expect(jsonData.side).to.eql(\"Sell\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 4)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 4 elements in body\")",
+							"});",
+							"pm.test(\"17.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что заявка удалена из стакана",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order?id=9999\", (error, response) => { ",
+							"  pm.test('17. Check deleted order in orderbook', function () {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 404);",
+							"    pm.expect(response).to.have.property('status', 'Not Found');",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/order?id=9999",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "9999"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "18. DeleteOrderWithoutPriceById(TODO)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(\"https://\" + HOST + \"/api/order/clean\")",
+							"",
+							"//Помещаем заявку в стакан",
+							"const postRequest = {",
+							"  url: \"https://\" + HOST + \"/api/order/create\",",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"    'X-Foo': 'bar'",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify(",
+							"        { ",
+							"            id: \"9999\",",
+							"            price : \"9999\", ",
+							"            quantity: \"9999\", ",
+							"            side: \"Sell\"",
+							"        }",
+							"    )",
+							"  }",
+							"};",
+							"pm.sendRequest(postRequest);",
+							"",
+							"//Проверяем, что заявка в стакане есть",
+							"pm.sendRequest(\"https://\" + HOST + \"/api/order?id=9999\", (error, response) => {",
+							"  if (error)",
+							"    console.log(error);",
+							"  pm.test('17. Preconditions. Check added order in orderbook', () => {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 200);",
+							"    pm.expect(response).to.have.property('status', 'OK');",
+							"",
+							"    var jsonData = response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"9999\");",
+							"    pm.expect(jsonData.price).to.eql(\"9999\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"9999\");",
+							"    pm.expect(jsonData.side).to.eql(\"Sell\");",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"17.01. Check response status code for delete order by id\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"17.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"9999\");",
+							"    pm.expect(jsonData.price).to.eql(\"9999\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"9999\");",
+							"    pm.expect(jsonData.side).to.eql(\"Sell\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 3)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 3 elements in body\")",
+							"});",
+							"pm.test(\"17.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что заявка удалена из стакана",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/order?id=9999\", (error, response) => { ",
+							"  pm.test('17. Check deleted order in orderbook', function () {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 404);",
+							"    pm.expect(response).to.have.property('status', 'Not Found');",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}/api/order?id=9999",
+					"protocol": "https",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "9999"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "19. DeleteOrderWithoutIdById(TODO)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(\"https://\" + HOST + \"/api/order/clean\")",
+							"",
+							"//Помещаем заявку в стакан",
+							"const postRequest = {",
+							"  url: \"https://\" + HOST + \"/api/order/create\",",
+							"  method: 'POST',",
+							"  header: {",
+							"    'Content-Type': 'application/json',",
+							"    'X-Foo': 'bar'",
+							"  },",
+							"  body: {",
+							"    mode: 'raw',",
+							"    raw: JSON.stringify(",
+							"        { ",
+							"            id: \"9999\",",
+							"            price : \"9999\", ",
+							"            quantity: \"9999\", ",
+							"            side: \"Sell\"",
+							"        }",
+							"    )",
+							"  }",
+							"};",
+							"pm.sendRequest(postRequest);",
+							"",
+							"//Проверяем, что заявка в стакане есть",
+							"pm.sendRequest(\"https://\" + HOST + \"/api/order?id=9999\", (error, response) => {",
+							"  if (error)",
+							"    console.log(error);",
+							"  pm.test('17. Preconditions. Check added order in orderbook', () => {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 200);",
+							"    pm.expect(response).to.have.property('status', 'OK');",
+							"",
+							"    var jsonData = response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"9999\");",
+							"    pm.expect(jsonData.price).to.eql(\"9999\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"9999\");",
+							"    pm.expect(jsonData.side).to.eql(\"Sell\");",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"17.01. Check response status code for delete order by id\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"17.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"9999\");",
+							"    pm.expect(jsonData.price).to.eql(\"9999\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"9999\");",
+							"    pm.expect(jsonData.side).to.eql(\"Sell\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 3)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 3 elements in body\")",
+							"});",
+							"pm.test(\"17.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что заявка удалена из стакана",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/order?id=9999\", (error, response) => { ",
+							"  pm.test('17. Check deleted order in orderbook', function () {",
+							"    pm.expect(error).to.equal(null);",
+							"    pm.expect(response).to.have.property('code', 404);",
+							"    pm.expect(response).to.have.property('status', 'Not Found');",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://{{HOST}}/api/order?id=9999",
+					"protocol": "https",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "9999"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "20. CheckAddOrderWithAllParams(min)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//!!!!!!!!!!!",
+							"//По аналогии проверяем поля price и quantity на граничные значения",
+							"//Также для price будут позитивными значениями являться целые числа, числа с одним и двумя знаками после запятой, значение в формате \"5.0\" и тд",
+							"",
+							"pm.test(\"20.01. Check response status code for delete order by id\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"20.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"1\");",
+							"    pm.expect(jsonData.price).to.eql(\"1\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"1\");",
+							"    pm.expect(jsonData.side).to.eql(\"buy\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 4)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 4 elements in body\")",
+							"});",
+							"pm.test(\"20.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что метод реально добавил данные в стакан",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/marketdata\", (error, response_md) => {",
+							"  pm.test('20.04. Сheck order book', function () {",
+							"    var jsonData = response_md.json();",
+							"    pm.expect(jsonData.asks[0].price).to.eql(\"1\");",
+							"    pm.expect(jsonData.asks[0].quantity).to.eql(\"1\");",
+							"    if (jsonData.bids.length != 0)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 1)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1\",\n    \"price\" : \"1\",\n    \"quantity\": \"1\",\n    \"side\": \"Buy\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "21. CheckAddOrderWithAllParams(max)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//!!!!!!!!!!!",
+							"//По аналогии проверяем поля price и quantity на граничные значения",
+							"//Также для price будут позитивными значениями являться целые числа, числа с одним и двумя знаками после запятой, значение в формате \"5.0\" и тд",
+							"",
+							"pm.test(\"21.01. Check response status code for delete order by id\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"21.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"9999\");",
+							"    pm.expect(jsonData.price).to.eql(\"9999\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"9999\");",
+							"    pm.expect(jsonData.side).to.eql(\"sell\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 4)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 4 elements in body\")",
+							"});",
+							"pm.test(\"21.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что метод реально добавил данные в стакан",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/marketdata\", (error, response_md) => {",
+							"  pm.test('21.04. Сheck order book', function () {",
+							"    var jsonData = response_md.json();",
+							"    pm.expect(jsonData.bids[0].price).to.eql(\"9999\");",
+							"    pm.expect(jsonData.bids[0].quantity).to.eql(\"9999\");",
+							"    if (jsonData.bids.length != 1)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 0)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"9999\",\n    \"price\" : \"9999\",\n    \"quantity\": \"9999\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "22. CheckAddOrderWithAllParams(avg)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//!!!!!!!!!!!",
+							"//По аналогии проверяем поля price и quantity на граничные значения",
+							"//Также для price будут позитивными значениями являться целые числа, числа с одним и двумя знаками после запятой, значение в формате \"5.0\" и тд",
+							"",
+							"pm.test(\"22.01. Check response status code for delete order by id\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"22.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"5000\");",
+							"    pm.expect(jsonData.price).to.eql(\"5000.55\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"5000\");",
+							"    pm.expect(jsonData.side).to.eql(\"sell\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 4)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 4 elements in body\")",
+							"});",
+							"pm.test(\"22.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что метод реально добавил данные в стакан",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/marketdata\", (error, response_md) => {",
+							"  pm.test('22.04. Сheck order book', function () {",
+							"    var jsonData = response_md.json();",
+							"    pm.expect(jsonData.asks[0].price).to.eql(\"5000.55\");",
+							"    pm.expect(jsonData.asks[0].quantity).to.eql(\"5000\");",
+							"    if (jsonData.bids.length != 0)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 1)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"5000\",\n    \"price\" : \"5000.55\",\n    \"quantity\": \"5000\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "23. CheckAddOrderWithInvalidParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"23.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"23.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1000\",\n    \"price\" : \"5000.55\",\n    \"quantity\": \"5000\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "24. CheckAddOrderWithInvalidParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"24.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"24.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//!!!!!!!!!!!",
+							"//По аналогии проверяем поля price и quantity на граничные значения, и на невалидные значениия",
+							"// На границе берем -1, 0, 1, 9999, 10000, 10001",
+							"// Невалидными для price будут строка, double не в string, более двух символом после запятой и тд",
+							"// Невалидными для quantity будет стройка, double не в string и тд"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"0\",\n    \"price\" : \"5000.55\",\n    \"quantity\": \"5000\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "25. CheckAddOrderWithInvalidParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"25.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"25.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//!!!!!!!!!!!",
+							"//По аналогии проверяем поля price и quantity на граничные значения, и на невалидные значениия",
+							"// На границе берем -1, 0, 1, 9999, 10000, 10001",
+							"// Невалидными для price будут строка, double не в string, более двух символом после запятой и тд",
+							"// Невалидными для quantity будет стройка, double не в string и тд"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"-1\",\n    \"price\" : \"5000.55\",\n    \"quantity\": \"5000\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "26. CheckAddOrderWithInvalidParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"26.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"26.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//!!!!!!!!!!!",
+							"//По аналогии проверяем поля price и quantity на граничные значения, и на невалидные значениия",
+							"// На границе берем -1, 0, 1, 9999, 10000, 10001",
+							"// Невалидными для price будут строка, double не в string, более двух символом после запятой и тд",
+							"// Невалидными для quantity будет стройка, double не в string и тд"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1001\",\n    \"price\" : \"5000.55\",\n    \"quantity\": \"5000\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "27. CheckAddOrderWithInvalididParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"27.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"27.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//!!!!!!!!!!!",
+							"//По аналогии проверяем поля price и quantity на граничные значения, и на невалидные значениия",
+							"// На границе берем -1, 0, 1, 9999, 10000, 10001",
+							"// Невалидными для price будут строка, double не в string, более двух символом после запятой и тд",
+							"// Невалидными для quantity будет стройка, double не в string и тд"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"5.5\",\n    \"price\" : \"5000.55\",\n    \"quantity\": \"5000\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "28. CheckAddOrderWithInvalidParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"28.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"28.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//!!!!!!!!!!!",
+							"//По аналогии проверяем поля price и quantity на граничные значения, и на невалидные значениия",
+							"// На границе берем -1, 0, 1, 9999, 10000, 10001",
+							"// Невалидными для price будут строка, double не в string, более двух символом после запятой и тд",
+							"// Невалидными для quantity будет стройка, double не в string и тд"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"test\",\n    \"price\" : \"5000.55\",\n    \"quantity\": \"5000\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "29. CheckAddOrderWithInvalidParams",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"29.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"29.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//!!!!!!!!!!!",
+							"//По аналогии проверяем поля price и quantity на граничные значения, и на невалидные значениия",
+							"// На границе берем -1, 0, 1, 9999, 10000, 10001",
+							"// Невалидными для price будут строка, double не в string, более двух символом после запятой и тд",
+							"// Невалидными для quantity будет стройка, double не в string и тд"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": 1,\n    \"price\" : \"5000.55\",\n    \"quantity\": \"5000\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "30. CheckAddOrderWithoutOptionalParams(TODO)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"30.01. Check response status code for delete order by id\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"30.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"1\");",
+							"    pm.expect(jsonData.price).to.eql(\"1\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"1\");",
+							"    pm.expect(jsonData.side).to.eql(\"Buy\");",
+							"",
+							"    //Проверяем, что в теле не содержится лишних элементов",
+							"    if (Object.keys(jsonData).length != 2)",
+							"        pm.expect.fail(\"Invalid body response. Expected only 4 elements in body\")",
+							"});",
+							"pm.test(\"30.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});",
+							"",
+							"//Проверяем, что метод реально добавил данные в стакан",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/marketdata\", (error, response_md) => {",
+							"  pm.test('30.04. Сheck order book', function () {",
+							"    var jsonData = response_md.json();",
+							"    pm.expect(jsonData.bids[0].price).to.eql(\"1\");",
+							"    pm.expect(jsonData.bids[0].quantity).to.eql(\"1\");",
+							"    if (jsonData.bids.length != 1)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 0)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantity\": \"5000\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{HOST}}/api/order/create",
+					"protocol": "https",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "31. CheckAddOrderWithoutQuantity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"31.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"31.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1\",\n    \"price\" : \"1\",\n    \"side\": \"Sell\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "32. CheckAddOrderWithoutSide",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"32.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"32.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1\",\n    \"price\" : \"1\",\n    \"quantity\": \"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "33. CheckAddOrderWithInvalidParamSide",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"33.01. Check response status code\", function ()  {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"pm.test(\"33.02. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"1\",\n    \"price\" : \"1\",\n    \"quantity\": \"1\",\n    \"side\": \"test\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST}}/api/order/create",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"order",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "34. GetEmptyOrderBook",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"34.01. Check response status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"34.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.bids.length != 0)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 0)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")",
+							"});",
+							"pm.test(\"34.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/marketdata",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"marketdata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "35. GetEmptyOrderBookOnlyAsks",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");",
+							"",
+							"//Добавляем заявки в стакан",
+							"",
+							"for (let i = 1; i <= 20; i++) {",
+							"    const postRequest = {",
+							"        url:  HOST + \"/api/order/create\",",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"            'X-Foo': 'bar'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(",
+							"                { ",
+							"                    id: String(i),",
+							"                    price : String(i), ",
+							"                    quantity: String(i), ",
+							"                    side: \"Buy\"",
+							"                }",
+							"            )",
+							"        }",
+							"    };",
+							"  pm.sendRequest(postRequest);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"35.01. Check response status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"35.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.bids.length != 0)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 20)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")",
+							"    ",
+							"    for (let i = 1; i <= 20; i++) {",
+							"        pm.expect(jsonData.asks[i-1].price).to.eql(String(i))",
+							"        pm.expect(jsonData.asks[i-1].quantity).to.eql(String(i))",
+							"    }",
+							"});",
+							"pm.test(\"35.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/marketdata",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"marketdata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "36. GetEmptyOrderBookOnlyBids",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(pm.environment.get(\"HOST\") + \"/api/order/clean\");",
+							"",
+							"//Добавляем заявки в стакан",
+							"",
+							"for (let i = 1; i <= 20; i++) {",
+							"    const postRequest = {",
+							"        url: HOST + \"/api/order/create\",",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"            'X-Foo': 'bar'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(",
+							"                { ",
+							"                    id: String(i),",
+							"                    price : String(i), ",
+							"                    quantity: String(i), ",
+							"                    side: \"Sell\"",
+							"                }",
+							"            )",
+							"        }",
+							"    };",
+							"  pm.sendRequest(postRequest);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"36.01. Check response status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"36.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.bids.length != 20)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 0)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")",
+							"    ",
+							"    for (let i = 1; i <= 20; i++) {",
+							"        pm.expect(jsonData.bids[i-1].price).to.eql(String(i))",
+							"        pm.expect(jsonData.bids[i-1].quantity).to.eql(String(i))",
+							"    }",
+							"});",
+							"pm.test(\"36.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/marketdata",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"marketdata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "37. GetEmptyOrderBookOnlyAsksAndBids",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(HOST + \"/api/order/clean\");",
+							"",
+							"// Добавляем заявки в стакан",
+							"const postRq = {",
+							"        url: HOST + \"/api/order/create\",",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"            'X-Foo': 'bar'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(",
+							"                {",
+							"                    \"price\": \"price\",",
+							"                    \"quantity\": \"quantity\",",
+							"                    \"side\": \"side\"",
+							"                }",
+							"            )",
+							"        }",
+							"}",
+							"",
+							"body = JSON.parse(postRq.body.raw);",
+							"",
+							"for (let i = 1; i <= 20; i++) {",
+							"    // body.id = String(i);",
+							"    body.price = String(i);",
+							"    body.quantity = String(i);",
+							"",
+							"    body.side = \"Buy\"",
+							"    postRq.body.raw = body;",
+							"    pm.sendRequest(postRq);",
+							"",
+							"    body.side = \"Sell\"",
+							"    postRq.body.raw = body;",
+							"    pm.sendRequest(postRq);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"37.01. Check response status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"37.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.bids.length != 20)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 20)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")",
+							"    ",
+							"    for (let i = 1; i <= 20; i++) {",
+							"        pm.expect(jsonData.bids[20-i+1].price).to.eql(String(i))",
+							"        pm.expect(jsonData.bids[i-1].quantity).to.eql(String(i))",
+							"        pm.expect(jsonData.asks[i-1].price).to.eql(String(i))",
+							"        pm.expect(jsonData.asks[i-1].quantity).to.eql(String(i))",
+							"    }",
+							"});",
+							"pm.test(\"37.03. Response time is less than expected\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(parseInt(pm.environment.get(\"RESPONSE_TIME\")));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/marketdata",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"marketdata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "38. OrderBookSorting",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(HOST + \"/api/order/clean\");",
+							"",
+							"// Добавляем заявки в стакан",
+							"const postRq = {",
+							"        url: HOST + \"/api/order/create\",",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"            'X-Foo': 'bar'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(",
+							"                {",
+							"                    \"id\": \"id\",",
+							"                    \"price\": \"price\",",
+							"                    \"quantity\": \"quantity\",",
+							"                    \"side\": \"side\"",
+							"                }",
+							"            )",
+							"        }",
+							"}",
+							"body = JSON.parse(postRq.body.raw);",
+							"",
+							"body.id = \"2\";",
+							"body.price = \"255.56\";",
+							"body.quantity = \"2\";",
+							"body.side = \"Buy\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"body.id = \"3\";",
+							"body.price = \"255.55\";",
+							"body.quantity = \"3\";",
+							"body.side = \"Buy\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"body.id = \"1\";",
+							"body.price = \"300\";",
+							"body.quantity = \"1\";",
+							"body.side = \"Buy\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"",
+							"",
+							"",
+							"body.id = \"5\";",
+							"body.price = \"855\";",
+							"body.quantity = \"2\";",
+							"body.side = \"Sell\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"body.id = \"6\";",
+							"body.price = \"850\";",
+							"body.quantity = \"3\";",
+							"body.side = \"Sell\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"body.id = \"4\";",
+							"body.price = \"900.5\";",
+							"body.quantity = \"1\";",
+							"body.side = \"Sell\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"38.01. Check response status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"38.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.bids.length != 3)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 3)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")",
+							"",
+							"    pm.expect(jsonData.bids[0].price).to.eql(\"900.5\")",
+							"    pm.expect(jsonData.bids[0].quantity).to.eql(\"4\")",
+							"    pm.expect(jsonData.asks[0].price).to.eql(\"300\")",
+							"    pm.expect(jsonData.asks[0].quantity).to.eql(\"1\")",
+							"",
+							"    pm.expect(jsonData.bids[0].price).to.eql(\"855\")",
+							"    pm.expect(jsonData.bids[0].quantity).to.eql(\"5\")",
+							"    pm.expect(jsonData.asks[0].price).to.eql(\"255.56\")",
+							"    pm.expect(jsonData.asks[0].quantity).to.eql(\"2\")",
+							"",
+							"    pm.expect(jsonData.bids[0].price).to.eql(\"850\")",
+							"    pm.expect(jsonData.bids[0].quantity).to.eql(\"6\")",
+							"    pm.expect(jsonData.asks[0].price).to.eql(\"255.55\")",
+							"    pm.expect(jsonData.asks[0].quantity).to.eql(\"3\")",
+							"    ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/marketdata",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"marketdata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "39. CheckCharacterCase",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let HOST = pm.environment.get(\"HOST\");",
+							"",
+							"//Чистим стакан перед запуском основного тест-кейса",
+							"pm.sendRequest(HOST + \"/api/order/clean\");",
+							"",
+							"// Добавляем заявки в стакан",
+							"const postRq = {",
+							"        url: HOST + \"/api/order/create\",",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json',",
+							"            'X-Foo': 'bar'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify(",
+							"                {",
+							"                    \"id\": \"id\",",
+							"                    \"price\": \"price\",",
+							"                    \"quantity\": \"quantity\",",
+							"                    \"side\": \"side\"",
+							"                }",
+							"            )",
+							"        }",
+							"}",
+							"body = JSON.parse(postRq.body.raw);",
+							"",
+							"body.id = \"1\";",
+							"body.price = \"1\";",
+							"body.quantity = \"1\";",
+							"body.side = \"Buy\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"body.id = \"2\";",
+							"body.price = \"2\";",
+							"body.quantity = \"2\";",
+							"body.side = \"buy\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"body.id = \"3\";",
+							"body.price = \"3\";",
+							"body.quantity = \"3\";",
+							"body.side = \"BUY\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"",
+							"",
+							"",
+							"body.id = \"4\";",
+							"body.price = \"1\";",
+							"body.quantity = \"1\";",
+							"body.side = \"Sell\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"body.id = \"5\";",
+							"body.price = \"2\";",
+							"body.quantity = \"2\";",
+							"body.side = \"sell\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"body.id = \"6\";",
+							"body.price = \"3\";",
+							"body.quantity = \"3\";",
+							"body.side = \"SELL\"",
+							"postRq.body.raw = body;",
+							"pm.sendRequest(postRq);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"39.01. Check response status code\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"39.02. Check response body\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.bids.length != 3)",
+							"      pm.expect.fail(\"Предложений на продажу больше, чем ожидается\")",
+							"    if (jsonData.asks.length != 3)",
+							"      pm.expect.fail(\"Предложений на покупку больше, чем ожидается\")    ",
+							"});",
+							"",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/order?id=1\", (error, response) => { ",
+							"  pm.test('39. Check order in orderbook', function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"1\");",
+							"    pm.expect(jsonData.price).to.eql(\"1\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"1\");",
+							"    pm.expect(jsonData.side).to.eql(\"buy\");",
+							"  });",
+							"});",
+							"",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/order?id=2\", (error, response) => { ",
+							"  pm.test('39. Check order in orderbook', function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"2\");",
+							"    pm.expect(jsonData.price).to.eql(\"2\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"2\");",
+							"    pm.expect(jsonData.side).to.eql(\"buy\");",
+							"  });",
+							"});",
+							"",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/order?id=3\", (error, response) => { ",
+							"  pm.test('39. Check order in orderbook', function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"3\");",
+							"    pm.expect(jsonData.price).to.eql(\"3\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"3\");",
+							"    pm.expect(jsonData.side).to.eql(\"buy\");",
+							"  });",
+							"});",
+							"",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/order?id=4\", (error, response) => { ",
+							"  pm.test('39. Check order in orderbook', function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"4\");",
+							"    pm.expect(jsonData.price).to.eql(\"4\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"4\");",
+							"    pm.expect(jsonData.side).to.eql(\"sell\");",
+							"  });",
+							"});",
+							"",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/order?id=5\", (error, response) => { ",
+							"  pm.test('39. Check order in orderbook', function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"5\");",
+							"    pm.expect(jsonData.price).to.eql(\"5\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"5\");",
+							"    pm.expect(jsonData.side).to.eql(\"sell\");",
+							"  });",
+							"});",
+							"",
+							"pm.sendRequest(\"https://\" + pm.environment.get(\"HOST\") + \"/api/order?id=6\", (error, response) => { ",
+							"  pm.test('39. Check order in orderbook', function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.id).to.eql(\"6\");",
+							"    pm.expect(jsonData.price).to.eql(\"6\");",
+							"    pm.expect(jsonData.quantity).to.eql(\"6\");",
+							"    pm.expect(jsonData.side).to.eql(\"sell\");",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST}}/api/marketdata",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"api",
+						"marketdata"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
