@@ -2,9 +2,7 @@ package ru.orderbook.entity;
 
 import io.restassured.response.Response;
 import lombok.*;
-import org.json.JSONException;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @Getter
@@ -18,13 +16,14 @@ import static org.junit.Assert.fail;
 public class Order {
 
     public Order(Response response ) {
-        assertEquals("Статусный код ответа оличный от 200", 200, response.getStatusCode());
         try {
+            if (response.getStatusCode() != 200)
+                throw new Exception("Статусный код ответа оличный от 200");
             id = response.jsonPath().getString("id");
             price = response.jsonPath().getString("price");
             quantity = response.jsonPath().getString("quantity");
             side = response.jsonPath().getString("side");
-        } catch (JSONException ex){
+        } catch (Exception ex){
             fail(ex.getMessage());
         }
     }

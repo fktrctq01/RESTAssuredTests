@@ -5,7 +5,6 @@ import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import org.json.JSONException;
-import ru.orderbook.entity.MarketDataSnapshot;
 import ru.orderbook.entity.Order;
 
 import java.io.FileInputStream;
@@ -53,27 +52,16 @@ public class RestAPI {
                 then().contentType(ContentType.JSON).extract().response();
     }
 
-    public void doCleanRequest() throws JSONException {
-        Response response = given().
+    public Response doCleanRequest() throws JSONException {
+        return given().
                 when().get(EndPoints.clean).
                 then().contentType(ContentType.JSON).extract().response();
-
-        int statusCode = response.getStatusCode();
-        String message = response.jsonPath().getString("message");
-
-        assertEquals(200, statusCode);
-        assertEquals("Order book is clean.", message);
     }
 
-    public MarketDataSnapshot doGetMarkedDataRequest() throws JSONException {
-        Response response = given().
+    public Response doGetMarkedDataRequest() throws JSONException {
+        return given().
                 when().get(EndPoints.marketdata).
                 then().contentType(ContentType.JSON).extract().response();
-
-        int statusCode = response.getStatusCode();
-        assertEquals(200, statusCode);
-
-        return new MarketDataSnapshot(response);
     }
 
     public Response doCreateOrderRequest(Order order) throws JSONException {

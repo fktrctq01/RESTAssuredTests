@@ -15,87 +15,209 @@ public class Tests {
 
     @Before
     public void before(){
+        System.out.println("Starting a test run");
         restAPI.doCleanRequest();
+    }
+
+    @After
+    public void after(){
+        restAPI.doCleanRequest();
+        System.out.println("End of test execution");
     }
 
     @Epic("Тестирование торгового стакана заявок")
     @Feature(value = "CASE #1")
-    @Description("Смоук тест для проверки работоспособности всех сервисов")
+    @Description("Проверка статусного кода ответа при создании ордера")
     @Severity(SeverityLevel.BLOCKER)
     @Test()
-    public void SmokeTest() {
-        System.out.println("Starting a test run");
+    public void test_createOrder_checkStatusCode() {
+        Order order = Order.builder()
+                .id("1")
+                .price("100")
+                .quantity("10")
+                .side("Sell")
+                .build();
 
-        // Создаем 2 ордера
+        // Отправляем запрос на создание ордера и получаем  ответ
+        Response response = restAPI.doCreateOrderRequest(order);
+
+        // Проверяем, что ордер создан успешно
+        assertEquals(200, response.getStatusCode());
+    }
+
+    @Epic("Тестирование торгового стакана заявок")
+    @Feature(value = "CASE #2")
+    @Description("Проверка тела ответа при создании оредера")
+    @Severity(SeverityLevel.BLOCKER)
+    @Test()
+    public void test_createOrder_checkBody() {
+        Order order = Order.builder()
+                .id("1")
+                .price("100")
+                .quantity("10")
+                .side("Sell")
+                .build();
+
+        // Отправляем запрос на создание ордера и получаем  ответ
+        Response response = restAPI.doCreateOrderRequest(order);
+
+        // Проверяем, что ордер создан успешно
+        Order createdOrder_2 = new Order(response);
+        assertEquals("1", createdOrder_2.getId());
+        assertEquals("100", createdOrder_2.getPrice());
+        assertEquals("10", createdOrder_2.getQuantity());
+        assertEquals("sell", createdOrder_2.getSide());
+    }
+
+    @Epic("Тестирование торгового стакана заявок")
+    @Feature(value = "CASE #3")
+    @Description("Проверка получения статусного кода при запросе пустой маркетдаты")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test()
+    public void test_getEmptyMarketData_checkStatusCode() {
+        // Отправляем запрос на получение маркетдаты
+        Response response = restAPI.doGetMarkedDataRequest();
+
+        // Проверяем код ответа
+        assertEquals(200, response.getStatusCode());
+    }
+
+    @Epic("Тестирование торгового стакана заявок")
+    @Feature(value = "CASE #4")
+    @Description("Проверка тела ответа при запросе пустой маркетдаты")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test()
+    public void test_getEmptyMarketData_checkBody() {
+        // Отправляем запрос на получение маркетдаты
+        Response response = restAPI.doGetMarkedDataRequest();
+        MarketDataSnapshot marketData = new MarketDataSnapshot(response);
+
+        // Проверяем, что в теле ответа приходят пустые списка на продажу и покупку
+        assertEquals(0, marketData.getAsks().size());
+        assertEquals(0, marketData.getBids().size());
+    }
+
+    @Epic("Тестирование торгового стакана заявок")
+    @Feature(value = "CASE #5")
+    @Description("Проверка статусного кода ответа при запросе НЕ пустой маркетдаты")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test()
+    public void test_getFillMarketData_checkStatusCode() {
+        // Создаем два отрера на покупку и продажу
         Order order_1 = Order.builder()
                 .id("1")
                 .price("100")
                 .quantity("10")
                 .side("Sell")
                 .build();
+        restAPI.doCreateOrderRequest(order_1);
         Order order_2 = Order.builder()
                 .id("2")
                 .price("200")
                 .quantity("20")
                 .side("Buy")
                 .build();
+        restAPI.doCreateOrderRequest(order_2);
 
-        // Проверяем, что ордер создан успешно
-        Response responseOnCreateOrder_1 = restAPI.doCreateOrderRequest(order_1);
-        assertEquals(200, responseOnCreateOrder_1.getStatusCode());
+        // Отправляем запрос на получение маркетдаты
+        Response response = restAPI.doGetMarkedDataRequest();
 
-        // Проверяем, что ордер создан успешно
-        Response responseOnCreateOrder_2 = restAPI.doCreateOrderRequest(order_2);
-        assertEquals(200, responseOnCreateOrder_2.getStatusCode());
+        // Проверяем код ответа
+        assertEquals(200, response.getStatusCode());
+    }
 
-        // А также проверяем, что в теле ответа данные приходят корректные
-        Order createdOrder_2 = new Order(responseOnCreateOrder_2);
-        assertEquals("2", createdOrder_2.getId());
-        assertEquals("200", createdOrder_2.getPrice());
-        assertEquals("20", createdOrder_2.getQuantity());
-        assertEquals("buy", createdOrder_2.getSide());
+    @Epic("Тестирование торгового стакана заявок")
+    @Feature(value = "CASE #6")
+    @Description("Проверка тела ответа при запросе НЕ пустой маркетдаты")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test()
+    public void test_getFillMarketData_checkBody() {
+        // Создаем два отрера на покупку и продажу
+        Order order_1 = Order.builder()
+                .id("1")
+                .price("100")
+                .quantity("10")
+                .side("Sell")
+                .build();
+        restAPI.doCreateOrderRequest(order_1);
+        Order order_2 = Order.builder()
+                .id("2")
+                .price("200")
+                .quantity("20")
+                .side("Buy")
+                .build();
+        restAPI.doCreateOrderRequest(order_2);
 
-
-        // Получаем маркетдату
-        MarketDataSnapshot marketData = restAPI.doGetMarkedDataRequest();
+        // Отправляем запрос на получение маркетдаты
+        Response response = restAPI.doGetMarkedDataRequest();
+        MarketDataSnapshot marketData = new MarketDataSnapshot(response);
 
         //Проверяем, что все 2 заяки есть в снепшоте
-        assertEquals(3, marketData.getAsks().size());
+        assertEquals(1, marketData.getAsks().size());
         assertEquals("200", marketData.getAsks().get(0).getPrice());
         assertEquals("20", marketData.getAsks().get(0).getQuantity());
         assertEquals(1, marketData.getBids().size());
         assertEquals("100", marketData.getBids().get(0).getPrice());
         assertEquals("10", marketData.getBids().get(0).getQuantity());
+    }
 
+    @Epic("Тестирование торгового стакана заявок")
+    @Feature(value = "CASE #7")
+    @Description("Проверка статусного кода при запросе очистки стакана")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test()
+    public void test_cleanOrderBook_checkStatusCode() {
+        // Отправляем запрос для очистки стакана
+        Response response = restAPI.doCleanRequest();
 
+        // Проверяем код ответа
+        assertEquals(200, response.getStatusCode());
+    }
+
+    @Epic("Тестирование торгового стакана заявок")
+    @Feature(value = "CASE #8")
+    @Description("Проверка удаления заявок при очистке стакана")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test()
+    public void test_cleanOrderBook() {
+        // Создаем два ордера на покупку и продажу
+        Order order_1 = Order.builder()
+                .id("1")
+                .price("100")
+                .quantity("10")
+                .side("Sell")
+                .build();
+        restAPI.doCreateOrderRequest(order_1);
+
+        // Отправляем запрос для очистки стакана
+        restAPI.doCleanRequest();
+
+        // Отправляем запрос на получение маркетдаты
+        Response response = restAPI.doGetMarkedDataRequest();
+        MarketDataSnapshot marketData = new MarketDataSnapshot(response);
+
+        // Проверяем, что в теле ответа приходят пустые списка на продажу и покупку
+        assertEquals(0, marketData.getAsks().size());
+        assertEquals(0, marketData.getBids().size());
+    }
+
+    @Epic("Тестирование торгового стакана заявок")
+    @Feature(value = "CASE #9")
+    @Description("Проверка удаления заявки")
+    @Severity(SeverityLevel.CRITICAL)
+    @Test()
+    public void test_deleteOrder_checkStatusCode() {
+        // Создаем два ордера на покупку и продажу
+        Order order_1 = Order.builder()
+                .id("1")
+                .price("100")
+                .quantity("10")
+                .side("Sell")
+                .build();
+        restAPI.doCreateOrderRequest(order_1);
 
         //Удаляем заявку и проверяем ответ
         Response responseToDelOrder = restAPI.doDeleteRequest("1");
         assertEquals(200, responseToDelOrder.getStatusCode());
-        Order deletedOrder_1 = new Order(responseToDelOrder);
-        assertEquals("1", deletedOrder_1.getId());
-        assertEquals("100", deletedOrder_1.getPrice());
-        assertEquals("10", deletedOrder_1.getQuantity());
-        assertEquals("sell", deletedOrder_1.getSide());
-
-        //Проверяем, что одна заявка действительно удалена, а вторая на месте
-        assertEquals(404, restAPI.doGetRequest("1").getStatusCode());
-        assertEquals(200, restAPI.doGetRequest("2").getStatusCode());
-
-
-
-        //Чистим стакан
-        restAPI.doCleanRequest();
-
-        //Проверяем, что вторая заявка тоже удалена
-        assertEquals(404, restAPI.doGetRequest("2").getStatusCode());
-
-        System.out.println("End of test execution");
     }
-
-    @After
-    public void after(){
-        restAPI.doCleanRequest();
-    }
-
 }
