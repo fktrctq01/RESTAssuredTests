@@ -3,7 +3,7 @@
 - Java 11 or later
 - Maven 3.6.3 or later
 
-## 🚀 For run autotests:
+## 🚀 For run autotests
 ```
 mvn clean test
 ```
