@@ -12,11 +12,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
 
-/**
- * Сервис, позволяется отправлять запросы
- */
 public class RestAPI {
 
     public static final class EndPoints {

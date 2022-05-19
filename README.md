@@ -1,10 +1,9 @@
-# Подготовка к запуску тестов
-- Указать url сервиса по пути _src/main/resources/config.properties_
-
-# Запуск тестов
-- Java 11+
+## 🏁 Get started
+- Specify the service URL in the properties file _src/main/resources/config.properties_
+- Java 11 or later
 - Maven 3.6.3 or later
-- Run:
+
+## 🚀 For run autotests:
 ```
 mvn clean test
 ```
